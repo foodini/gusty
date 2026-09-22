@@ -5,6 +5,8 @@ Instruments weather stations.
 
 ![Sample rendering](https://github.com/foodini/gusty/blob/main/example_2d.png?raw=true)
 
+## Dependencies
+Definitely do this in a virtual environment
 ``` 
 python3 -m pip install numpy
 python3 -m pip install plotly
