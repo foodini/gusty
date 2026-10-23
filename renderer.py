@@ -68,7 +68,7 @@ class Renderer(object):
     self.trailing_position_timestamp = self.latest_time - GUST_TIME_WINDOW
     print('max gust factor:', max(self.sc_gust_energies))
     self.render_2d()
-    self.render_3d()
+    #self.render_3d()
 
   def render_2d(self):
     fig = go.Figure()
@@ -92,8 +92,8 @@ class Renderer(object):
     # It's nearly impossible for dewpoint to be higher than temperature, so we can
     # save ourselves some iterating in getting the temperature boundaries by just
     # taking max of temp and min of dewpoint.
-    min_temp = min(self.sc_dewpoints)
-    max_temp = min(self.sc_temperatures)
+    min_temp = min(filter(lambda t: t>0.5, self.sc_dewpoints))
+    max_temp = max(self.sc_temperatures)
 
     # I don't want to show an entire graph range of, say 30 degrees to 100 degrees. It compacts
     # the temp and dewpoint lines into nearly flat, frequently coincident lines. However, I want

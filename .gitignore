@@ -1,0 +1,10 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+*.txt
+*.out
+*.html
+*.png
+pyvenv*
+lib*
+bin/*
+share/*
+archive/*

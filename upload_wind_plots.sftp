@@ -1,0 +1,6 @@
+lcd ~/Funston/gusty/
+cd /var/www/html/flyfunston/old-website/newwebcam
+put -p windsock_2d.html
+put -p clubhouse_2d.html
+exit
+exit
