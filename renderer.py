@@ -26,9 +26,10 @@ HIGHEST_REASONABLE_TEMP = 100
 LOWEST_REASONABLE_TEMP = 30
 
 class Renderer(object):
-  def __init__(self, instrument_name, wind_band_offset):
+  def __init__(self, instrument_name, wind_band_offset, create_png):
     self.instrument_name = instrument_name
     self.wind_band_offset = wind_band_offset
+    self.create_png = create_png
     self.dl_timestamps = []
     self.dl_directions = []
     self.dl_speeds = []
@@ -163,6 +164,101 @@ class Renderer(object):
       )
     )
 
+
+    page_title = f'Fort Funston {self.instrument_name.capitalize()} - {datetime.now().ctime()}'
+
+    # synchronize crosshairs, tooltips, and styling
+    fig.update_layout(
+      title = page_title,
+      template='plotly_dark',
+      #height = 1200,
+      hovermode = 'x',
+      hoverlabel = dict(
+        bgcolor = '#0b0f19',
+        bordercolor = '#334155',
+        font = dict(
+          family = 'monospace',
+          size = 16,
+          color = '#f8fafc',
+        ),
+      ),
+      showlegend = False,
+      margin = dict(l=80, r=80, b=40, t=50),
+
+      xaxis = dict(
+        range = [-8*3600, 0],
+        tickvals = [-28800, -21600, -14400, -7200, 0],
+        ticktext = ['-8h', '-6h', '-4h', '-2h', 'Now'],
+        tickfont = dict(color='#94a3b8'),
+        gridcolor = '#1e293b',
+        showgrid = True,
+
+        showspikes = True,
+        spikemode = 'across',
+        spikesnap = 'cursor',
+        spikethickness = 1,
+        spikecolor = '#f8fafc',
+        spikedash = 'dot',
+        hoverformat = '', #kills the '-123.4k' bullshit from hovertext
+      ),
+
+      yaxis = dict(
+        title = dict(text='Speed(mph)', font=dict(color='#cbd5e1')),
+        range = [0, 40],
+        gridcolor = '#1e293b',
+        tickfont = dict(color='#94a3b8'),
+      ),
+
+      yaxis2 = dict(
+        title = dict(text='Direction', font=dict(color='#cbd5e1')),
+        range = [0, 360],
+        tickvals = [0, 90, 180, 270, 360],
+        ticktext = ['N', 'E', 'S', 'W', 'N'],
+        gridcolor = '#1e293b',
+        tickfont = dict(color='#94a3b8'),
+      ),
+    )
+
+    # Add the 'optimal' band for wind speed.
+    for mn, mx in [(18,20), (16,22), (14,24), (12,26)]:
+      fig.add_hrect(
+        y0 = mn + self.wind_band_offset,
+        y1 = mx + self.wind_band_offset,
+        yref = 'y',
+        fillcolor = '#a0a0a0',
+        opacity = 0.06,
+        layer = 'below',
+        line_width = 0,
+      )
+
+    # Add the 'optimal' band for wind direction.
+    for dd in [10, 20, 30, 45]:
+      fig.add_hrect(
+        y0 = 260 - dd,
+        y1 = 260 + dd,
+        yref = 'y2',
+        fillcolor = '#a0a0a0',
+        opacity = 0.04 + dd/1000.0,
+        layer = 'below',
+        line_width = 0,
+      )
+
+    if self.create_png:
+      fig.update_layout(
+        title = None,
+        paper_bgcolor = 'rgba(0,0,0,0)',
+        plot_bgcolor = 'rgba(16,16,16,16)',
+
+        yaxis_domain = [0.525, 1.0],
+        yaxis2_domain = [0.0, 0.475],
+      )
+      png_filename = self.instrument_name + '_2d.png'
+      print(f'writing {len(self.sc_speeds)} data points to {png_filename}...', flush=True)
+      raw_data = fig.to_image(format='png', width=900, height=400, scale=1.0)
+      with open(png_filename, 'wb') as out:
+        out.write(raw_data)
+      print(f'done writing {png_filename}', flush=True)
+
     fig.add_trace(
       go.Scatter(
         x = ts_map,
@@ -214,65 +310,11 @@ class Renderer(object):
         hovertemplate = '<extra></extra>'
       )
     )
-
-    page_title = f'Fort Funston {self.instrument_name.capitalize()} - {datetime.now().ctime()}'
-
-    # synchronize crosshairs, tooltips, and styling
     fig.update_layout(
-      title = page_title,
-      template='plotly_dark',
       paper_bgcolor='#0b0f19',
       plot_bgcolor='#0b0f19',
-      #height = 1200,
-      hovermode = 'x',
-      hoverlabel = dict(
-        bgcolor = '#0b0f19',
-        bordercolor = '#334155',
-        font = dict(
-          family = 'monospace',
-          size = 16,
-          color = '#f8fafc',
-        ),
-      ),
-      showlegend = False,
-      margin = dict(l=80, r=80, b=40, t=50),
-
-      xaxis = dict(
-        range = [-8*3600, 0],
-        tickvals = [-28800, -21600, -14400, -7200, 0],
-        ticktext = ['-8h', '-6h', '-4h', '-2h', 'Now'],
-        tickfont = dict(color='#94a3b8'),
-        gridcolor = '#1e293b',
-        showgrid = True,
-
-        showspikes = True,
-        spikemode = 'across',
-        spikesnap = 'cursor',
-        spikethickness = 1,
-        spikecolor = '#f8fafc',
-        spikedash = 'dot',
-        hoverformat = '', #kills the '-123.4k' bullshit from hovertext
-      ),
-
-
-      yaxis = dict(
-        domain = [0.65, 1.0], # Controls how much vertical screen space this axis gets.
-        title = dict(text='Speed(mph)', font=dict(color='#cbd5e1')),
-        range = [0, 40],
-        gridcolor = '#1e293b',
-        tickfont = dict(color='#94a3b8'),
-      ),
-
-      yaxis2 = dict(
-        domain = [0.30, 0.60],
-        title = dict(text='Direction', font=dict(color='#cbd5e1')),
-        range = [0, 360],
-        tickvals = [0, 90, 180, 270, 360],
-        ticktext = ['N', 'E', 'S', 'W', 'N'],
-        gridcolor = '#1e293b',
-        tickfont = dict(color='#94a3b8'),
-      ),
-
+      yaxis_domain = [0.65, 1.0],
+      yaxis2_domain = [0.3, 0.6],
       yaxis3 = dict(
         domain = [0.0, 0.25],
         title = dict(text='Dewpoint & Temp', font=dict(color='#ff6060')),
@@ -295,28 +337,6 @@ class Renderer(object):
       ),
     )
 
-    for mn, mx in [(18,20), (16,22), (14,24), (12,26)]:
-      fig.add_hrect(
-        y0 = mn + self.wind_band_offset,
-        y1 = mx + self.wind_band_offset,
-        yref = 'y',
-        fillcolor = '#a0a0a0',
-        opacity = 0.06,
-        layer = 'below',
-        line_width = 0,
-      )
-
-    for dd in [10, 20, 30, 45]:
-      fig.add_hrect(
-        y0 = 260 - dd,
-        y1 = 260 + dd,
-        yref = 'y2',
-        fillcolor = '#a0a0a0',
-        opacity = 0.04 + dd/1000.0,
-        layer = 'below',
-        line_width = 0,
-      )
-
     html_filename = self.instrument_name + '_2d.html'
     print(f'writing {len(self.sc_speeds)} data points to {html_filename}...', flush=True)
     # add full_html=False to make an embeddable chunk.
@@ -324,15 +344,6 @@ class Renderer(object):
       str(file_path.joinpath(html_filename)),
       include_plotlyjs='cdn')
     print(f'done writing {html_filename}', flush=True)
-
-    '''
-    png_filename = self.instrument_name + '_2d.png'
-    print(f'writing {len(self.sc_speeds)} data points to {png_filename}...', flush=True)
-    raw_data = fig.to_image(format='png', width=1400, height=900, scale=1.5)
-    with open(png_filename, 'wb') as out:
-      out.write(raw_data)
-    print(f'done writing {png_filename}', flush=True)
-    '''
 
   def render_3d(self):
     fig = go.Figure() # go figure...
@@ -510,11 +521,11 @@ class Renderer(object):
 
 #TODO(P1): This is a shit way to parse-and-render. The iteration should be in the class,
 #          by having get_lines just take over and render when it feels like it.
-def process_input(instrument_name, wind_band_offset):
+def process_input(instrument_name, wind_band_offset, create_png):
   print('Creating renderer for ' + instrument_name, flush=True)
-  renderer = Renderer(instrument_name, wind_band_offset)
+  renderer = Renderer(instrument_name, wind_band_offset, create_png)
   for datapoint_dict in renderer.get_lines():
     renderer.append_datapoint(datapoint_dict)
 
-process_input('windsock', 0)
-process_input('clubhouse', -5)
+process_input('windsock', 0, True)
+process_input('clubhouse', -5, False)
