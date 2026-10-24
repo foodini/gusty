@@ -78,7 +78,6 @@ while True:
           f'{last_inHg_absolute}'
       )
     data_buff += '\n'
-    print(f'  {instrument_names[txid]:9} {data_buff}', end='', flush=True)
     outputs[txid].write(data_buff)
     outputs[txid].flush()
 
