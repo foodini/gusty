@@ -88,5 +88,5 @@ with open(argv[1]) as fd:
       draw.text(text='inHg:', xy=(0,5*FONT_HEIGHT), font=font, fill='white')
       draw.text(text=inHg_absolute_text, xy=(0,5*FONT_HEIGHT), font=font, fill='white')
 
-      img.save('overlay.png', 'png')
-      print('saved overlay.png')
+      img.save('raw_overlay.png', 'png')
+      print('saved raw_overlay.png')
