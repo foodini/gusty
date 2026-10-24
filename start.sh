@@ -9,10 +9,7 @@ if [[ ! -d archive ]]; then
 fi
 DATE_STRING=`date +%Y.%m.%d`
 
-echo killing running udp listeners...
-kill -9 `ps aux | grep listen_on_udp_22222.py | grep -v grep | cut -w -f2`
-echo killing running plot uploaders...
-kill -9 `ps aux | grep upload_wind_plots.sh | grep -v grep | cut -w -f2`
+./stop.sh
 
 echo archiving conditions data...
 cp conditions_clubhouse.txt "archive/"$DATE_STRING"_conditions_clubhouse.txt"
@@ -29,5 +26,8 @@ nohup ./listen_on_udp_22222.py >> listen_on_udp_22222.out 2>&1 &
 
 echo starting uploader...
 nohup ./upload_wind_plots.sh >> upload_wind_plots.out 2>&1 &
+
+echo starting raw_overlay...
+nohup ./raw_overlay.py conditions_windsock.txt >> raw_overlay.out 2>&1 &
 
 echo done

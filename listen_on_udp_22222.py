@@ -33,7 +33,7 @@ outputs = [
 last_davis_http_timestamp = 0.0
 last_davis_response = None
 davis_http_frequency = 15.0
-last_bar_absolute = 29.92
+last_inHg_absolute = 29.92
 
 # It's an absolute bullshit design, but the Davis receiver only sends out
 # certain data via udp - most of it completely useless aggregation info.
@@ -57,7 +57,7 @@ while True:
           if conditions['data_structure_type'] == 1:
             last_davis_response[conditions['txid']] = conditions
           elif conditions['data_structure_type'] == 3:
-            last_bar_absolute = conditions['bar_absolute']
+            last_inHg_absolute = conditions['bar_absolute']
       last_davis_http_timestamp = now
     except Exception as e:
       print('  http exception', e, flush=True)
@@ -75,7 +75,7 @@ while True:
           f' {last_davis_response[txid]["temp"]} ' +
           f'{last_davis_response[txid]["hum"]} ' +
           f'{last_davis_response[txid]["dew_point"]} '
-          f'{last_bar_absolute}'
+          f'{last_inHg_absolute}'
       )
     data_buff += '\n'
     print(f'  {instrument_names[txid]:9} {data_buff}', end='', flush=True)

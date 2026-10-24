@@ -40,7 +40,7 @@ class Renderer(object):
     self.sc_temperatures = []
     self.sc_humidities = []
     self.sc_dewpoints = []
-    self.sc_bar_absolute = []
+    self.sc_inHg_absolute = []
     self.gust_energy_trailing_position = -1
     self.trailing_position_timestamp = 0.0
     self.gust_energy_rolling_total = 0.0
@@ -87,7 +87,7 @@ class Renderer(object):
       f'Pressure: {p:.3f}(bar)<br>'
       for t, s, d, g, tmp, h, dew, p in zip (
           hms, self.sc_speeds, self.sc_directions, self.sc_gust_energies, self.sc_temperatures,
-          self.sc_humidities, self.sc_dewpoints, self.sc_bar_absolute)
+          self.sc_humidities, self.sc_dewpoints, self.sc_inHg_absolute)
     ]
 
     # It's nearly impossible for dewpoint to be higher than temperature, so we can
@@ -482,7 +482,7 @@ class Renderer(object):
     self.sc_temperatures.append(datapoint_dict['temp'])
     self.sc_humidities.append(datapoint_dict['humidity'])
     self.sc_dewpoints.append(datapoint_dict['dewpoint'])
-    self.sc_bar_absolute.append(datapoint_dict['bar_absolute'])
+    self.sc_inHg_absolute.append(datapoint_dict['inHg_absolute'])
     if not self.dl_timestamps or timestamp > self.dl_timestamps[-2] + 180:
       self.dl_timestamps.extend([timestamp, timestamp, timestamp, None])
       self.dl_directions.extend([wind_dir, wind_dir, 360, None])
@@ -500,20 +500,20 @@ class Renderer(object):
           line = line.strip()
           fields = [f for f in line.split(' ') if f != '']
           if len(fields) > 3:
-            timestamp, wind_speed, wind_dir, temp, humidity, dewpoint, bar_absolute = fields
+            timestamp, wind_speed, wind_dir, temp, humidity, dewpoint, inHg_absolute = fields
           else:
             timestamp, wind_speed, wind_dir = fields
-            temp, humidity, dewpoint, bar_absolute = (0.0, 0.0, 0.0, 0.0)
+            temp, humidity, dewpoint, inHg_absolute = (0.0, 0.0, 0.0, 0.0)
             
           if float(timestamp) > now - 8*3600:
             datapoint_dict = dict(
-              timestamp =    float(timestamp),
-              wind_speed =   float(wind_speed),
-              wind_dir =     int(wind_dir),
-              temp =         float(temp),
-              humidity =     float(humidity),
-              dewpoint =    float(dewpoint),
-              bar_absolute = float(bar_absolute),
+              timestamp =     float(timestamp),
+              wind_speed =    float(wind_speed),
+              wind_dir =      int(wind_dir),
+              temp =          float(temp),
+              humidity =      float(humidity),
+              dewpoint =      float(dewpoint),
+              inHg_absolute = float(inHg_absolute),
             )
 
             yield datapoint_dict
