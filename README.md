@@ -30,7 +30,7 @@ YouTube Livestream. The 8-hour history graph is uploaded to flyfunston.org
 for general access. The .png will be copied to where OBS Studio expects to find
 it. 
 
-raw_overlay.py also watches the conditions_windsock.txt file and, every time
+live_overlay.py also watches the conditions_windsock.txt file and, every time
 it changes, renders one of these:
 
 ![Sample raw](https://github.com/foodini/gusty/blob/main/example_raw.png?raw=true)
@@ -41,4 +41,4 @@ station broadcasts.
 I'm not a fan of the fact that the uploader is currently calling the renderer. I
 should have one process that watches for changes to any of the generated assets
 and sends them to their proper destinations, keeping the renderer and the uploader
-separate. It makes more sense that way now that the raw_overlay renderer exists.
+separate. It makes more sense that way now that the live_overlay renderer exists.

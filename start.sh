@@ -27,7 +27,7 @@ nohup ./listen_on_udp_22222.py >> listen_on_udp_22222.out 2>&1 &
 echo starting uploader...
 nohup ./upload_wind_plots.sh >> upload_wind_plots.out 2>&1 &
 
-echo starting raw_overlay...
-nohup ./raw_overlay.py conditions_windsock.txt >> raw_overlay.out 2>&1 &
+echo starting live_overlay...
+nohup ./live_overlay.py conditions_windsock.txt >> live_overlay.out 2>&1 &
 
 echo done

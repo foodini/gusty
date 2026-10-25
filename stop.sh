@@ -11,7 +11,7 @@ for pid in `ps aux | grep upload_wind_plots.sh | grep -v grep | cut -w -f2`; do
   kill -9 $pid
 done
 echo killing running overlay processes...
-for pid in `ps aux | grep raw_overlay.py | grep -v grep | cut -w -f2`; do
+for pid in `ps aux | grep live_overlay.py | grep -v grep | cut -w -f2`; do
   echo killing overlay pid $pid
   kill -9 $pid
 done
