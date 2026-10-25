@@ -19,9 +19,9 @@ def www_upload(filename):
 
 def stream_upload(filename):
   command = [
-    '/usr/bin/scp',
+    '/usr/bin/cp',
     filename,
-    'flyfunston@clubhousemedia:/home/flyfunston/',
+    '/home/flyfunston/video',
   ]
 
 def both_upload(filename):
@@ -41,14 +41,14 @@ watchdogs = [
   },
   {
     'mod_time': 0,
-    'action': lambda x: www_upload(x), # and stream_upload(x),
+    'action': lambda x: www_upload(x) and stream_upload(x),
     'filename': 'windsock_2d.png',
   },
-  #{
-    #'mod_time': 0,
-    #'action': lambda x: stream_upload(x),
-    #'filename': 'live_overlay.png',
-  #},
+  {
+    'mod_time': 0,
+    'action': lambda x: stream_upload(x),
+    'filename': 'live_overlay.png',
+  },
 ]
 
 for i in range(len(watchdogs)):

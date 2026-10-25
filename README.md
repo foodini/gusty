@@ -8,6 +8,8 @@ Instruments weather stations.
 ## Dependencies
 Definitely do this in a virtual environment
 ``` 
+python3 -m venv .
+source bin/activate
 python3 -m pip install numpy
 python3 -m pip install pillow
 python3 -m pip install plotly
