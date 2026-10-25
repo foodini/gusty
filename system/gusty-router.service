@@ -1,0 +1,15 @@
+[Unit]
+Description=Gusty Router - uploads Gusty products to their (http/OBS) services
+PartOf=gusty.target
+After=network.target
+
+[Service]
+Type=simple
+User=flyfunston
+Group=flyfunston
+WorkingDirectory=/home/flyfunston/gusty
+ExecStart=/usr/bin/python3 /home/flyfunston/gusty/router.py
+Restart=on-failure
+
+[Install]
+WantedBy=gusty.target

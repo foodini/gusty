@@ -21,7 +21,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
 sock.bind(("", 22222))
 
 file_path = Path(__file__).parent
-print(file_path)
 
 instrument_names = [None, 'clubhouse', 'windsock']
 outputs = [

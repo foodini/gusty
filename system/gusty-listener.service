@@ -1,0 +1,15 @@
+[Unit]
+Description=Gusty Listener - Weather station UDP&HTTP state -> conditions files.
+PartOf=gusty.target
+After=network.target
+
+[Service]
+Type=simple
+User=flyfunston
+Group=flyfunston
+WorkingDirectory=/home/flyfunston/gusty
+ExecStart=/usr/bin/python3 /home/flyfunston/gusty/listen_on_udp_22222.py
+Restart=on-failure
+
+[Install]
+WantedBy=gusty.target

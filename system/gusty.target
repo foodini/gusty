@@ -1,0 +1,6 @@
+[Unit]
+Description=Weather Data Collector and Renderer
+Wants=gusty-router.service gusty-listener.service gusty-renderer.service gusty-overlay.service
+
+[Install]
+WantedBy=multi-user.target

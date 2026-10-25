@@ -26,15 +26,13 @@ def deg_to_compass(deg):
 def justify(str):
   return (' ' * (NUM_COLUMNS - len(str))) + str
 
-if len(argv) < 2:
-  stderr.write(f'usage: {argv[0]} conditions_file.txt\n')
-  exit(1)
-
 img = Image.new('RGBA', (IMG_WIDTH, IMG_HEIGHT), BACKGROUND_COLOR)
 draw = ImageDraw.Draw(img)
 font = ImageFont.truetype('DejaVuSansMono.ttf', size=20)
 
-with open(argv[1]) as fd:
+#TODO: This will eventually consume both conditions files and do both renders,
+#      to avoid needing two separate services - one for each. 
+with open('conditions_windsock.txt') as fd:
   fd.seek(0, io.SEEK_END)
 
   fileno = fd.fileno()
