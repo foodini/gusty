@@ -86,5 +86,5 @@ with open('conditions_windsock.txt') as fd:
       draw.text(text='inHg:', xy=(0,5*FONT_HEIGHT), font=font, fill='white')
       draw.text(text=inHg_absolute_text, xy=(0,5*FONT_HEIGHT), font=font, fill='white')
 
-      img.save('raw_overlay.png', 'png')
-      print('saved raw_overlay.png')
+      img.save('live_overlay.png', 'png')
+      print('saved live_overlay.png')

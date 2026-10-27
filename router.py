@@ -12,17 +12,19 @@ def www_upload(filename):
   command = [
     '/usr/bin/scp',
     filename, 
-    'flyfunston@209.182.236.182:/var/www/html/flyfunston/old-website/newwebcam',
+    'root@209.182.236.182:/var/www/html/flyfunston/old-website/newwebcam',
   ]
   
-  subprocess.run(command)
+  result = subprocess.run(command)
 
 def stream_upload(filename):
   command = [
     '/usr/bin/cp',
     filename,
-    '/home/flyfunston/video',
+    '/home/flyfunston/youtube',
   ]
+
+  result = subprocess.run(command)
 
 def both_upload(filename):
   stream_upload(filename)
@@ -41,7 +43,7 @@ watchdogs = [
   },
   {
     'mod_time': 0,
-    'action': lambda x: www_upload(x) and stream_upload(x),
+    'action': lambda x: both_upload(x),
     'filename': 'windsock_2d.png',
   },
   {

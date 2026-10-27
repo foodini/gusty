@@ -65,6 +65,10 @@ class Renderer(object):
     return f'{dt.hour:02}:{dt.minute:02}:{dt.second:02}'
 
   def render(self):
+    if len(self.sc_timestamps) < 1:
+      print('no data available in conditions file for ' + self.instrument_name)
+      return
+
     self.latest_time = time.time()
     self.trailing_position_timestamp = self.latest_time - GUST_TIME_WINDOW
     print('max gust factor:', max(self.sc_gust_energies))
@@ -489,7 +493,12 @@ class Renderer(object):
       self.dl_speeds.extend([0, wind_speed, wind_speed, None])
 
   def get_lines(self):
-    with open(file_path.joinpath(f'conditions_{self.instrument_name}.txt')) as infd:
+    filename = f'conditions_{self.instrument_name}.txt'
+    fq_filename = file_path.joinpath(filename)
+    if not fq_filename.is_file():
+      with open(fq_filename, 'w') as fd:
+        pass
+    with open(file_path.joinpath(filename)) as infd:
       while True:
         line = infd.readline()
         if not line:
