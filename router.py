@@ -51,6 +51,11 @@ watchdogs = [
     'action': lambda x: stream_upload(x),
     'filename': 'live_overlay.png',
   },
+  {
+    'mod_time': 0,
+    'action': lambda x: www_upload(x),
+    'filename': 'live.json',
+  }
 ]
 
 for i in range(len(watchdogs)):

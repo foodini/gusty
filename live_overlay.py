@@ -88,3 +88,13 @@ with open('conditions_windsock.txt') as fd:
 
       img.save('live_overlay.png', 'png')
       print('saved live_overlay.png')
+
+      json_str = (
+        '{' +
+        f'"speed": {wind_speed}, "wind_dir": {wind_dir}, "temp": {temp}, "dewpoint": {dewpoint}, ' +
+        f'"humidity": {humidity}, "inHG_absolute": {inHg_absolute}' +
+        '}'
+      )
+      with open('live.json', 'w') as json_fd:
+        json_fd.write(json_str)
+      print('saved live.json')

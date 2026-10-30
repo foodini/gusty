@@ -71,7 +71,6 @@ class Renderer(object):
 
     self.latest_time = time.time()
     self.trailing_position_timestamp = self.latest_time - GUST_TIME_WINDOW
-    print('max gust factor:', max(self.sc_gust_energies))
     self.render_2d()
     #self.render_3d()
 

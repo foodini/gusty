@@ -3,6 +3,8 @@
 *.out
 *.html
 *.png
+*.jpg
+*.json
 pyvenv*
 lib*
 bin/*
