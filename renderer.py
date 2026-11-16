@@ -65,10 +65,6 @@ class Renderer(object):
     return f'{dt.hour:02}:{dt.minute:02}:{dt.second:02}'
 
   def render(self):
-    if len(self.sc_timestamps) < 1:
-      print('no data available in conditions file for ' + self.instrument_name)
-      return
-
     self.latest_time = time.time()
     self.trailing_position_timestamp = self.latest_time - GUST_TIME_WINDOW
     self.render_2d()
@@ -343,9 +339,11 @@ class Renderer(object):
     html_filename = self.instrument_name + '_2d.html'
     print(f'writing {len(self.sc_speeds)} data points to {html_filename}...', flush=True)
     # add full_html=False to make an embeddable chunk.
-    fig.write_html(
-      str(file_path.joinpath(html_filename)),
-      include_plotlyjs='cdn')
+    html_str = fig.to_html(include_plotlyjs='cdn')
+    refresh_tag='<meta http-equiv="refresh" content="300">'
+    html_str = html_str.replace('<head>', f'<head>\n    {refresh_tag}', 1)
+    with open(str(file_path.joinpath(html_filename)), 'w') as html_fd:
+        html_fd.write(html_str)
     print(f'done writing {html_filename}', flush=True)
 
   def render_3d(self):
@@ -492,12 +490,7 @@ class Renderer(object):
       self.dl_speeds.extend([0, wind_speed, wind_speed, None])
 
   def get_lines(self):
-    filename = f'conditions_{self.instrument_name}.txt'
-    fq_filename = file_path.joinpath(filename)
-    if not fq_filename.is_file():
-      with open(fq_filename, 'w') as fd:
-        pass
-    with open(file_path.joinpath(filename)) as infd:
+    with open(file_path.joinpath(f'conditions_{self.instrument_name}.txt')) as infd:
       while True:
         line = infd.readline()
         if not line:
