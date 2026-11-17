@@ -25,8 +25,8 @@ file_path = Path(__file__).parent
 instrument_names = [None, 'clubhouse', 'windsock']
 outputs = [
   None,
-  open(file_path.joinpath(f'conditions_{instrument_names[1]}.txt'), 'a'),
-  open(file_path.joinpath(f'conditions_{instrument_names[2]}.txt'), 'a'),
+  file_path.joinpath(f'conditions_{instrument_names[1]}.txt'),
+  file_path.joinpath(f'conditions_{instrument_names[2]}.txt'),
 ]
 
 last_davis_http_timestamp = 0.0
@@ -77,7 +77,11 @@ while True:
           f'{last_inHg_absolute}'
       )
     data_buff += '\n'
-    outputs[txid].write(data_buff)
-    outputs[txid].flush()
+
+    #Originally, I opened the files in the creation of the outputs list, but
+    #this will cause a failure when the outputs are truncated and replaced at
+    #the end of each day.
+    with open(outputs[txid], 'a') as outfd:
+      outfd.write(data_buff)
 
   # Why the fuck isn't this data in the udp report?

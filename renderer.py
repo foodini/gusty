@@ -340,7 +340,7 @@ class Renderer(object):
     print(f'writing {len(self.sc_speeds)} data points to {html_filename}...', flush=True)
     # add full_html=False to make an embeddable chunk.
     html_str = fig.to_html(include_plotlyjs='cdn')
-    refresh_tag='<meta http-equiv="refresh" content="300">'
+    refresh_tag='<meta http-equiv="refresh" content="60">'
     html_str = html_str.replace('<head>', f'<head>\n    {refresh_tag}', 1)
     with open(str(file_path.joinpath(html_filename)), 'w') as html_fd:
         html_fd.write(html_str)
